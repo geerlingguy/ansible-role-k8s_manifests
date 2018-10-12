@@ -1,0 +1,27 @@
+---
+- name: Ensure at least one manifest is in the list.
+  fail:
+    msg: "Please supply one or more k8s_manifests to apply."
+  when: k8s_manifests == []
+
+- name: Ensure a namespace is set.
+  fail:
+    msg: "The k8s_resource_namespace variable is not set."
+  when:
+    - k8s_manage_namespace == true
+    - k8s_resource_namespace == ''
+
+- name: Ensure namespace exists.
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ k8s_resource_namespace }}"
+    state: present
+    kubeconfig: "{{ k8s_kubeconfig }}"
+  when: k8s_manage_namespace == true
+
+- name: Deploy manifests defined in k8s_manifests.
+  include_tasks: deploy-manifest.yml
+  loop: "{{ k8s_manifests }}"
+  loop_control:
+    loop_var: outer_item

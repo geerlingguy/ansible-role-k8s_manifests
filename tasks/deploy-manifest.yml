@@ -1,0 +1,23 @@
+---
+- name: Set variables for this iteration of the loop.
+  set_fact:
+    manifest_directory: "{{ k8s_manifests_base_dir }}{{ outer_item.dir | default(outer_item) }}"
+    manifest_lookup_type: "{{ outer_item.lookup_type | default('template') }}"
+
+- name: Print current manifest directory.
+  debug: var=manifest_directory
+
+- name: Include vars specific to this manifest.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ manifest_directory }}/vars.yml"
+      skip: true
+
+- name: Deploy the resources defined inside the manifest.
+  k8s:
+    definition: "{{ item }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_manifests_state }}"
+  loop: "{{ lookup(manifest_lookup_type, manifest_directory + '/manifest.yml') | from_yaml_all | list }}"
+  no_log: "{{ k8s_no_log }}"

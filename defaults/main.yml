@@ -1,0 +1,15 @@
+---
+ansible_python_interpreter: '{{ ansible_playbook_python }}'
+
+k8s_manifests: []
+# - monitoring/prometheus
+# - dir: monitoring/grafana-configmap
+#   lookup_type: 'file'
+k8s_manifests_base_dir: ''
+k8s_manifests_state: present
+
+k8s_kubeconfig: ~/.kube/config
+
+k8s_resource_namespace: ''
+k8s_manage_namespace: true
+k8s_no_log: true
