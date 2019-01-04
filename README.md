@@ -7,6 +7,7 @@ An Ansible Role that applies Kubernetes manifests (either templated, or directly
 ## Requirements
 
   - Pip package: `openshift`
+  - If running on localhost (e.g. with `connection: local`), you may need to set `ansible_python_interpreter: "{{ ansible_playbook_python }}"` for the role to work correctly.
 
 ## Role Variables
 
@@ -30,7 +31,7 @@ This role then looks inside the specified directory for each manifest, and appli
 
 If you need to template the file, this role templates the `manifest.yml` file by default (and automatically adds any variables in a `vars.yml` file alongside the `manifest.yml` file). But you can also disable templating and have the manifest applied directly by setting `lookup_type: file`.
 
-    k8s_manifests_base_dir: ''
+    k8s_manifests_base_dir: '' # include trailing /, e.g. 'base_dir/'
 
 If set, this string will be prepended to each manifest `dir`/path specified in `k8s_manifests`. This is useful if you store all your Kubernetes manifests in a directory outside the Ansible playbook directory, so you don't have to include the full path in each defined `k8s_manifests` list item.
 
@@ -55,7 +56,9 @@ Whether to log the details of each manifest's application to the cluster in the 
 
 None.
 
-## Example Playbook
+## Example Playbooks
+
+### Simple example - running on localhost
 
     ---
     - hosts: localhost
@@ -63,6 +66,7 @@ None.
       gather_facts: no
     
       vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
         k8s_kubeconfig: ~/.kube/config-my-cluster
         k8s_manifests_base_dir: k8s-manifests/
         k8s_manifests:
@@ -72,6 +76,34 @@ None.
         - role: geerlingguy.k8s_manifests
 
 See the `k8s-manifests` directory and it's README for an example templated manifest layout with a vars file defined alongside it.
+
+### Running as part of a larger play
+
+    ---
+    - hosts: k8s_cluster
+      become: true
+    
+      vars:
+        ansible_python_interpreter: python
+        k8s_manage_namespace: false
+        k8s_no_log: false
+        k8s_manifests_base_dir: k8s-manifests/
+        k8s_manifests:
+          - storageclass
+          - dir: docker-registry
+            namespace: registry
+    
+      tasks:
+        - name: Set the python interpreter appropriately.
+          set_fact:
+            ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    
+        - import_role:
+            name: geerlingguy.k8s_manifests
+          tags: ['kubernetes', 'nfs', 'drupal', 'registry']
+          delegate_to: localhost
+          become: false
+          run_once: true
 
 ## License
 
