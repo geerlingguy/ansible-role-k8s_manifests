@@ -8,8 +8,8 @@
   fail:
     msg: "The k8s_resource_namespace variable is not set."
   when:
-    - k8s_manage_namespace
-    - not k8s_resource_namespace
+    - k8s_manage_namespace == true
+    - k8s_resource_namespace == ''
 
 - name: Ensure namespace exists.
   k8s:
@@ -18,7 +18,7 @@
     name: "{{ k8s_resource_namespace }}"
     state: present
     kubeconfig: "{{ k8s_kubeconfig }}"
-  when: k8s_manage_namespace
+  when: k8s_manage_namespace == true
 
 - name: Deploy manifests defined in k8s_manifests.
   include_tasks: deploy-manifest.yml

@@ -1,6 +1,4 @@
 ---
-ansible_python_interpreter: '{{ ansible_playbook_python }}'
-
 k8s_manifests: []
 # - monitoring/prometheus
 # - dir: monitoring/grafana-configmap

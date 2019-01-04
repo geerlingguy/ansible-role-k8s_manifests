@@ -13,11 +13,18 @@ An Ansible Role that applies Kubernetes manifests (either templated, or directly
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
     k8s_manifests:
+      # Can be a path inside the `k8s_manifests_base_dir`.
       - monitoring/prometheus
+    
+      # Use a `file` lookup if you don't want to template the manifest file.
       - dir: monitoring/grafana-configmap
         lookup_type: 'file'
+    
+      # You can set a namespace per manifest (templated to `manifest_namespace`).
+      - dir: docker-registry
+        namespace: registry
 
-A list of Kubernetes manifest directories to apply to a Kubernetes cluster. This list can either be raw directory paths or folder names, or can be a dict with `dir` (the directory path/folder name) and `lookup_type` (the Ansible lookup type used for the `manifest.yml` file).
+A list of Kubernetes manifest directories to apply to a Kubernetes cluster. This list can either be raw directory paths or folder names, or can be a dict with `dir` (the directory path/folder name), optional `lookup_type` (the Ansible lookup type used for the `manifest.yml` file), and optional `namespace` (templated to `manifest_namespace`).
 
 This role then looks inside the specified directory for each manifest, and applies a `manifest.yml` file (and all it's contents) using the Ansible `k8s` module.
 
@@ -38,7 +45,7 @@ The path to the `kubeconfig` file to use to connect to the Kubernetes cluster.
     k8s_resource_namespace: ''
     k8s_manage_namespace: true
 
-By default, this role assumes you will be deploying resources into a particular namespace. So if you set `k8s_resource_namespace` to the namespace you are operating on, the role will ensure that namespace exists before applying any manifests. You can disable this role's namespace management (e.g. if the manifest you're applying should not be namespaced) by setting `k8s_manage_namespace: false`.
+By default, this role assumes you will be deploying resources into a particular namespace. So if you set `k8s_resource_namespace` to the namespace you are operating on, the role will ensure that namespace exists before applying any manifests. You can disable this role's namespace management (e.g. if the manifest you're applying should not be namespaced, or if you are applying namespaces per-manifest) by setting `k8s_manage_namespace: false`.
 
     k8s_no_log: true
 

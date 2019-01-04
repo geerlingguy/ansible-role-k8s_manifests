@@ -3,9 +3,19 @@
   set_fact:
     manifest_directory: "{{ k8s_manifests_base_dir }}{{ outer_item.dir | default(outer_item) }}"
     manifest_lookup_type: "{{ outer_item.lookup_type | default('template') }}"
+    manifest_namespace: "{{ outer_item.namespace | default('') }}"
 
 - name: Print current manifest directory.
   debug: var=manifest_directory
+
+- name: Ensure manifest-specific namespace exists.
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ manifest_namespace }}"
+    state: present
+    kubeconfig: "{{ k8s_kubeconfig }}"
+  when: manifest_namespace != ''
 
 - name: Include vars specific to this manifest.
   include_vars: "{{ item }}"
