@@ -29,6 +29,7 @@
     definition: "{{ item }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     state: "{{ k8s_manifests_state }}"
+    force: "{{ k8s_force }}"
   loop: "{{ lookup(manifest_lookup_type, manifest_directory + '/manifest.yml') | from_yaml_all | list }}"
   register: k8s_result
   until: k8s_result is success

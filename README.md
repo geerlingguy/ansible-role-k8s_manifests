@@ -39,6 +39,10 @@ If set, this string will be prepended to each manifest `dir`/path specified in `
 
 Whether the `state` for the `k8s` module should be `present` or `absent`. Note that using `absent` doesn't _always_ delete all Kubernetes resources defined in a manifest.
 
+    k8s_force: false
+
+If set to `true`, and `k8s_manifests_state` is set to `present`, an existing object will be replaced. Otherwise the default behavior for Ansible's `k8s` module and Kubernetes itself (e.g. if using `apply`) is to _patch_ the resource.
+
     k8s_kubeconfig: ~/.kube/config
 
 The path to the `kubeconfig` file to use to connect to the Kubernetes cluster.

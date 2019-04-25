@@ -5,6 +5,7 @@ k8s_manifests: []
 #   lookup_type: 'file'
 k8s_manifests_base_dir: ''
 k8s_manifests_state: present
+k8s_force: false
 
 k8s_kubeconfig: ~/.kube/config
 
