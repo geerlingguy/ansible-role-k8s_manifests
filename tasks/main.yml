@@ -9,7 +9,7 @@
     msg: "The k8s_resource_namespace variable is not set."
   when:
     - k8s_manage_namespace
-    - not k8s_resource_namespace | bool
+    - k8s_resource_namespace | default(true)
 
 - name: Ensure namespace exists.
   k8s:

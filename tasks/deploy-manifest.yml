@@ -15,7 +15,7 @@
     name: "{{ manifest_namespace }}"
     state: present
     kubeconfig: "{{ k8s_kubeconfig }}"
-  when: manifest_namespace | bool
+  when: manifest_namespace | default(false)
 
 - name: Include vars specific to this manifest.
   include_vars: "{{ item }}"
