@@ -1,6 +1,6 @@
 # Ansible Role: K8s Manifests
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-k8s_manifests.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-k8s_manifests)
+[![Build Status](https://travis-ci.com/geerlingguy/ansible-role-k8s_manifests.svg?branch=master)](https://travis-ci.com/geerlingguy/ansible-role-k8s_manifests)
 
 An Ansible Role that applies Kubernetes manifests (either templated, or directly) to Kubernetes clusters.
 
