@@ -27,7 +27,7 @@ Available variables are listed below, along with default values (see `defaults/m
 
 A list of Kubernetes manifest directories to apply to a Kubernetes cluster. This list can either be raw directory paths or folder names, or can be a dict with `dir` (the directory path/folder name), optional `lookup_type` (the Ansible lookup type used for the `manifest.yml` file), and optional `namespace` (templated to `manifest_namespace`).
 
-This role then looks inside the specified directory for each manifest, and applies a `manifest.yml` file (and all it's contents) using the Ansible `k8s` module.
+This role then looks inside the specified directory for each manifest, and applies a `manifest.yml` file (and all its contents) using the Ansible `k8s` module.
 
 If you need to template the file, this role templates the `manifest.yml` file by default (and automatically adds any variables in a `vars.yml` file alongside the `manifest.yml` file). But you can also disable templating and have the manifest applied directly by setting `lookup_type: file`.
 
@@ -79,7 +79,7 @@ None.
       roles:
         - role: geerlingguy.k8s_manifests
 
-See the `k8s-manifests` directory and it's README for an example templated manifest layout with a vars file defined alongside it.
+See the `k8s-manifests` directory and its README for an example templated manifest layout with a vars file defined alongside it.
 
 ### Running as part of a larger play
 
