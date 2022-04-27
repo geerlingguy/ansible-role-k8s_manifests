@@ -25,9 +25,15 @@ Available variables are listed below, along with default values (see `defaults/m
       - dir: docker-registry
         namespace: registry
 
+      # You may keep your manifests in separate YML files like services.yml, deployment.yml (templated to `manifest_fragments`).
+      - dir: foo-bar
+        fragments: True
+
 A list of Kubernetes manifest directories to apply to a Kubernetes cluster. This list can either be raw directory paths or folder names, or can be a dict with `dir` (the directory path/folder name), optional `lookup_type` (the Ansible lookup type used for the `manifest.yml` file), and optional `namespace` (templated to `manifest_namespace`).
 
 This role then looks inside the specified directory for each manifest, and applies a `manifest.yml` file (and all its contents) using the Ansible `k8s` module.
+
+If you keep parts of your manifest groupped into separate YML files, you can concatenate them (in string sorting order) into a single manifest.yml file by setting `fragments: True`.
 
 If you need to template the file, this role templates the `manifest.yml` file by default (and automatically adds any variables in a `vars.yml` file alongside the `manifest.yml` file). But you can also disable templating and have the manifest applied directly by setting `lookup_type: file`.
 
