@@ -29,6 +29,9 @@ Available variables are listed below, along with default values (see `defaults/m
       - dir: foo-bar
         fragments: True
 
+    # You can change fragments handling globally instead of setting up individually
+    k8s_manifests_fragments: true
+
 A list of Kubernetes manifest directories to apply to a Kubernetes cluster. This list can either be raw directory paths or folder names, or can be a dict with `dir` (the directory path/folder name), optional `lookup_type` (the Ansible lookup type used for the `manifest.yml` file), and optional `namespace` (templated to `manifest_namespace`).
 
 This role then looks inside the specified directory for each manifest, and applies a `manifest.yml` file (and all its contents) using the Ansible `k8s` module.

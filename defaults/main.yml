@@ -3,6 +3,7 @@ k8s_manifests: []
 # - monitoring/prometheus
 # - dir: monitoring/grafana-configmap
 #   lookup_type: 'file'
+k8s_manifests_fragments: false
 k8s_manifests_base_dir: ''
 k8s_manifests_state: present
 k8s_force: false

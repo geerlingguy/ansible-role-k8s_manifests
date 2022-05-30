@@ -31,7 +31,7 @@
     src: "{{ manifest_directory }}"
     dest: "{{ manifest_directory }}/manifest.yml"
     delimiter: "### START FRAGMENT ###"
-  when: manifest_fragments
+  when: manifest_fragments or k8s_manifests_fragments
 
 - name: Deploy the resources defined inside the manifest.
   k8s:
