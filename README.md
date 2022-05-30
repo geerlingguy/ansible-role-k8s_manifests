@@ -95,7 +95,7 @@ See the `k8s-manifests` directory and its README for an example templated manife
     ---
     - hosts: k8s_cluster
       become: true
-    
+
       vars:
         ansible_python_interpreter: python
         k8s_manage_namespace: false
@@ -105,12 +105,31 @@ See the `k8s-manifests` directory and its README for an example templated manife
           - storageclass
           - dir: docker-registry
             namespace: registry
-    
+          - dir: k8s
+            fragments: True
+          - dir: k8s/nfs-subdir-external-provisioner
+            fragments: True
+
       tasks:
         - name: Set the python interpreter appropriately.
           set_fact:
             ansible_python_interpreter: "{{ ansible_playbook_python }}"
-    
+
+        - name: Generate configuration files from templates
+          ansible.builtin.template:
+            src: "{{ item }}.j2"
+            dest: "{{ k8s_manifests_base_dir }}/{{ item }}"
+            mode: '0644'
+            owner: "root"
+            group: "root"
+            lstrip_blocks: true
+            trim_blocks: true
+          loop:
+            - "k8s/credential-secret.yaml"
+            - "k8s/nfs-subdir-external-provisioner/class.yaml"
+            - "k8s/nfs-subdir-external-provisioner/deployment.yaml"
+            - "k8s/nfs-subdir-external-provisioner/rbac.yaml"
+
         - import_role:
             name: geerlingguy.k8s_manifests
           tags: ['kubernetes', 'nfs', 'drupal', 'registry']
