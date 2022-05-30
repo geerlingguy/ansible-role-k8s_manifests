@@ -35,12 +35,11 @@
 
 - name: Deploy the resources defined inside the manifest.
   k8s:
-    definition: "{{ item }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     state: "{{ k8s_manifests_state }}"
     force: "{{ k8s_force }}"
-  loop: "{{ lookup(manifest_lookup_type, manifest_directory + '/manifest.yml') | from_yaml_all | list }}"
     namespace: "{{ manifest_namespace }}"
+    src: "{{ manifest_directory + '/manifest.yml' }}"
   register: k8s_result
   until: k8s_result is success
   retries: 10
