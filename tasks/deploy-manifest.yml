@@ -3,7 +3,7 @@
   set_fact:
     manifest_directory: "{{ k8s_manifests_base_dir }}{{ outer_item.dir | default(outer_item) }}"
     manifest_lookup_type: "{{ outer_item.lookup_type | default('template') }}"
-    manifest_namespace: "{{ outer_item.namespace | default('') }}"
+    manifest_namespace: "{{ outer_item.namespace | default(k8s_resource_namespace, true) }}"
     manifest_fragments: "{{ outer_item.fragments | default(False) }}"
 
 - name: Print current manifest directory.
@@ -40,6 +40,7 @@
     state: "{{ k8s_manifests_state }}"
     force: "{{ k8s_force }}"
   loop: "{{ lookup(manifest_lookup_type, manifest_directory + '/manifest.yml') | from_yaml_all | list }}"
+    namespace: "{{ manifest_namespace }}"
   register: k8s_result
   until: k8s_result is success
   retries: 10
