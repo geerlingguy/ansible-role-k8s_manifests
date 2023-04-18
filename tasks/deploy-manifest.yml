@@ -1,15 +1,16 @@
 ---
 - name: Set variables for this iteration of the loop.
-  set_fact:
-    manifest_directory: "{{ k8s_manifests_base_dir }}{{ outer_item.dir | default(outer_item) }}"
-    manifest_lookup_type: "{{ outer_item.lookup_type | default('template') }}"
-    manifest_namespace: "{{ outer_item.namespace | default('') }}"
+  ansible.builtin.set_fact:
+    manifest_directory: "{{ k8s_manifests_base_dir }}{{ k8s_manifests_component.dir | default(k8s_manifests_component) }}"
+    manifest_lookup_type: "{{ k8s_manifests_component.lookup_type | default('template') }}"
+    manifest_namespace: "{{ k8s_manifests_component.namespace | default('') }}"
 
 - name: Print current manifest directory.
-  debug: var=manifest_directory
+  ansible.builtin.debug:
+    var: manifest_directory
 
 - name: Ensure manifest-specific namespace exists.
-  k8s:
+  kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: "{{ manifest_namespace }}"
@@ -18,19 +19,23 @@
   when: manifest_namespace | default(false)
 
 - name: Include vars specific to this manifest.
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ k8s_manifests_var }}"
   with_first_found:
     - files:
         - "{{ manifest_directory }}/vars.yml"
       skip: true
+  loop_control:
+    loop_var: k8s_manifests_var
 
 - name: Deploy the resources defined inside the manifest.
-  k8s:
-    definition: "{{ item }}"
+  kubernetes.core.k8s:
+    definition: "{{ k8s_manifests_definition }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     state: "{{ k8s_manifests_state }}"
     force: "{{ k8s_force }}"
   loop: "{{ lookup(manifest_lookup_type, manifest_directory + '/manifest.yml') | from_yaml_all | list }}"
+  loop_control:
+    loop_var: k8s_manifests_definition
   register: k8s_result
   until: k8s_result is success
   retries: 10
