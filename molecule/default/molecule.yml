@@ -19,5 +19,4 @@ provisioner:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
 scenario:
   test_sequence:
-    - lint
     - syntax
