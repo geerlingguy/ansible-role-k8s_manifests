@@ -1,6 +1,6 @@
 # Ansible Role: K8s Manifests
 
-[![CI](https://github.com/geerlingguy/ansible-role-k8s_manifests/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-k8s_manifests/actions?query=workflow%3ACI)
+[![CI](https://github.com/geerlingguy/ansible-role-k8s_manifests/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-k8s_manifests/actions/workflows/ci.yml)
 
 An Ansible Role that applies Kubernetes manifests (either templated, or directly) to Kubernetes clusters.
 
